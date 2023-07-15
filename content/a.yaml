@@ -1,6 +1,8 @@
 log:
   level: info
 
+include: ["/etc/mosdns/b.yaml"]
+
 plugins:
 
   - tag: hosts
@@ -33,11 +35,23 @@ plugins:
       files:
         - "/etc/mosdns/heiym.txt"
 
+  - tag: heiymzzz
+    type: domain_set
+    args:
+      files:
+        - "/etc/mosdns/heiymzzz.txt"
+
   - tag: cnym
     type: domain_set
     args:
       files:
         - "/etc/mosdns/cnym.txt"
+
+  - tag: guowaiym
+    type: domain_set
+    args:
+      files:
+        - "/etc/mosdns/guowaiym.txt"
 
   - tag: cdxzf
     type: domain_set
@@ -71,20 +85,6 @@ plugins:
         - addr: "https://9.9.9.11/dns-query"
         - addr: "https://149.112.112.11/dns-query"
 
-  - tag: jzfwip
-    type: sequence
-    args:
-      - exec: black_hole 127.0.0.250
-      - exec: ttl 66600
-      - exec: accept
-
-  - tag: cfzxip
-    type: sequence
-    args:
-      - exec: black_hole 172.64.167.1 172.67.9.1 172.64.192.1 172.67.23.1
-      - exec: ttl 66600
-      - exec: accept
-
   - tag: jieshoua
     type: sequence
     args:
@@ -104,6 +104,10 @@ plugins:
       - matches:
           - "!qname $baiym"
           - qname $heiym
+        exec: goto jzfwip
+      - matches:
+          - "!qname $baiym"
+          - qname $heiymzzz
         exec: goto jzfwip
       - exec: prefer_ipv4
       - exec: ecs 219.136.136.136/24
@@ -128,6 +132,13 @@ plugins:
           - has_wanted_ans
           - "!resp_ip $heiip"
         exec: goto jieshoub
+      - matches:
+          - qname $guowaiym
+        exec: $quaddns
+      - matches:
+          - has_resp
+          - "!resp_ip $heiip"
+        exec: goto jieshoua
       - matches:
           - qname $cnym
         exec: $dnspod
